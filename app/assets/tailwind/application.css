@@ -8,12 +8,14 @@
 
 @layer components {
   .whiteboard {
-    background:
-      radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.018) 0%, transparent 55%),
-      radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.012) 0%, transparent 55%),
-      #1e1e1e;
-    box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(0, 0, 0, 0.3);
-    min-height: 75vh;
+    background: radial-gradient(ellipse at 50% 35%, #222 0%, #171717 60%, #0e0e0e 100%);
+    min-height: 55vh;
+  }
+
+  @media (min-width: 1024px) {
+    .whiteboard {
+      min-height: 75vh;
+    }
   }
 
   .whiteboard-input {
@@ -22,58 +24,49 @@
   }
 
   .note {
-    color: var(--chalk-color, rgba(240, 236, 224, 0.88));
-    background: rgba(255, 255, 255, 0.022);
-    border: 1px solid rgba(255, 255, 255, 0.11);
+    color: var(--chalk-color, rgba(240, 236, 224, 0.85));
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     opacity: var(--note-opacity);
     transform: translate3d(var(--note-offset-x), var(--note-offset-y), 0) rotate(var(--note-rotate));
     transition:
       transform 180ms ease,
-      opacity 220ms ease,
-      box-shadow 180ms ease;
+      opacity 220ms ease;
     animation: note-arrival 260ms ease-out;
   }
 
   .note:hover {
-    transform: translate3d(var(--note-offset-x), calc(var(--note-offset-y) - 3px), 0) rotate(var(--note-rotate));
-    background: rgba(255, 255, 255, 0.038);
-    border-color: rgba(255, 255, 255, 0.2);
+    transform: translate3d(var(--note-offset-x), calc(var(--note-offset-y) - 2px), 0) rotate(var(--note-rotate));
+    border-color: rgba(255, 255, 255, 0.14);
   }
 
-  .note--small  { min-height: 10rem; }
-  .note--medium { min-height: 13rem; }
-  .note--large  { min-height: 16rem; }
 
-  /* All variants are chalk-white tones — warm, cool, or tinted cream */
-  .note--sky    { --chalk-color: rgba(220, 238, 255, 0.88); }
-  .note--amber  { --chalk-color: rgba(255, 248, 210, 0.88); }
-  .note--mint   { --chalk-color: rgba(208, 255, 228, 0.88); }
-  .note--coral  { --chalk-color: rgba(255, 224, 216, 0.88); }
-  .note--lilac  { --chalk-color: rgba(232, 218, 255, 0.88); }
-  .note--cloud  { --chalk-color: rgba(240, 240, 240, 0.88); }
-  .note--sun    { --chalk-color: rgba(255, 248, 198, 0.88); }
+  .note--sky    { --chalk-color: rgba(220, 238, 255, 0.85); }
+  .note--amber  { --chalk-color: rgba(255, 248, 210, 0.85); }
+  .note--mint   { --chalk-color: rgba(208, 255, 228, 0.85); }
+  .note--coral  { --chalk-color: rgba(255, 224, 216, 0.85); }
+  .note--lilac  { --chalk-color: rgba(232, 218, 255, 0.85); }
+  .note--cloud  { --chalk-color: rgba(240, 240, 240, 0.85); }
+  .note--sun    { --chalk-color: rgba(255, 248, 198, 0.85); }
 
   .note p {
     font-family: 'Caveat', cursive;
     font-size: 1.4rem;
     line-height: 1.55;
-    text-shadow:
-      0 0 10px currentColor,
-      0 0 3px rgba(255, 255, 255, 0.25);
+    text-shadow: 0 0 18px currentColor;
   }
 
   .note .chalk-meta {
     font-size: 0.72rem;
     letter-spacing: 0.04em;
-    text-shadow: 0 0 6px currentColor;
-    opacity: 0.55;
+    opacity: 0.45;
   }
 }
 
 @keyframes note-arrival {
   from {
     opacity: 0;
-    transform: translate3d(var(--note-offset-x), calc(var(--note-offset-y) + 16px), 0) rotate(calc(var(--note-rotate) - 2deg));
+    transform: translate3d(var(--note-offset-x), calc(var(--note-offset-y) + 14px), 0) rotate(calc(var(--note-rotate) - 2deg));
   }
 
   to {

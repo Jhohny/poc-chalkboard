@@ -5,7 +5,7 @@
     <%= turbo_stream_from current_city.stream_name %>
 
     <section class="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-      <aside>
+      <aside class="lg:col-start-1">
         <div class="sticky top-4 space-y-4">
           <div class="rounded-2xl border border-white/8 bg-[#252525] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.40)]">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Anonymous Wall</p>
@@ -23,18 +23,16 @@
         </div>
       </aside>
 
-      <section class="space-y-4">
-        <div class="rounded-2xl border border-white/8 bg-black/20 p-3 shadow-[0_25px_80px_rgba(0,0,0,0.60)] sm:p-4">
-          <div class="whiteboard relative overflow-hidden rounded-[2rem] border border-slate-300/70 px-3 py-5 sm:px-5 sm:py-6">
-            <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#1e1e1e]/90 to-transparent"></div>
-            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#1e1e1e]/95 to-transparent"></div>
+      <section class="lg:col-start-2">
+        <div class="whiteboard relative overflow-hidden rounded-xl px-3 py-5 ring-1 ring-white/5 sm:px-5 sm:py-6">
+          <div class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0e0e0e]/70 to-transparent"></div>
+          <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0e0e0e]/80 to-transparent"></div>
 
-            <div id="wall_posts" class="columns-1 gap-3 sm:columns-2 lg:columns-3 xl:columns-4 [column-fill:_balance]">
-              <%= render partial: "posts/post", collection: @posts, as: :post %>
-            </div>
-
-            <%= render "posts/pagination", next_cursor: @next_cursor %>
+          <div id="wall_posts" class="columns-1 gap-3 sm:columns-2 lg:columns-3 xl:columns-4 [column-fill:_balance]">
+            <%= render partial: "posts/post", collection: @posts, as: :post %>
           </div>
+
+          <%= render "posts/pagination", next_cursor: @next_cursor %>
         </div>
       </section>
     </section>

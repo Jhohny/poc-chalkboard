@@ -1,0 +1,29 @@
+one:
+  city_slug: san-francisco
+  city_name: San Francisco
+  pseudonym: Quiet Echo
+  icon: "✦"
+  body: First pinned thought
+  x_position: 4
+  y_position: 8
+  rotation: 1
+  color_variant: sky
+  size_variant: small
+  posted_at: <%= 30.minutes.ago %>
+  expires_at: <%= 47.hours.from_now %>
+  session_token_digest: <%= Digest::SHA256.hexdigest("session-a") %>
+
+two:
+  city_slug: san-francisco
+  city_name: San Francisco
+  pseudonym: Hidden Marker
+  icon: "☼"
+  body: Older note still visible
+  x_position: -12
+  y_position: 12
+  rotation: -2
+  color_variant: amber
+  size_variant: medium
+  posted_at: <%= 4.hours.ago %>
+  expires_at: <%= 44.hours.from_now %>
+  session_token_digest: <%= Digest::SHA256.hexdigest("session-b") %>

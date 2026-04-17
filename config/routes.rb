@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
-  constraints subdomain: "app" do
-    root "dashboard#show", as: :app_root
-  end
+  root "walls#show"
 
-  constraints subdomain: /^(www)?$/ do
-    root "marketing/home#show"
-  end
+  resources :posts, only: [ :index, :create ]
 end

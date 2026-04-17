@@ -1,0 +1,9 @@
+<div id="wall_pagination" class="mt-6 flex justify-center">
+  <% if next_cursor.present? %>
+    <div data-controller="pagination" data-pagination-url-value="<%= posts_path(format: :turbo_stream, before: next_cursor) %>" class="h-10 w-full max-w-xs"></div>
+  <% else %>
+    <p class="rounded-full bg-white/70 px-4 py-2 text-xs font-medium text-slate-500 shadow-sm">
+      No older notes yet.
+    </p>
+  <% end %>
+</div>

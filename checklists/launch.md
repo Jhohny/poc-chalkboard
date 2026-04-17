@@ -1,0 +1,8 @@
+- domain purchased
+- DNS configured
+- landing page ready
+- auth working
+- privacy page
+- terms page
+- analytics installed
+- backups enabled

@@ -1,0 +1,3 @@
+As a user, I can ... so that ...
+
+List only the highest-value stories needed to validate the product idea. If priority is unclear, stop and ask before building.

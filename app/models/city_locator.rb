@@ -5,8 +5,9 @@
 # Priority chain:
 #   1. Dev session override  – Rails.env.development? + session[:dev_city_override]
 #   2. Dev localhost fallback – Rails.env.development? + loopback IP + LOCAL_CITY_FALLBACK env var
-#   3. CF-IPCity header       – set by Cloudflare on every proxied request (production)
-#   4. Geocoder IP lookup     – server-side fallback when not behind Cloudflare
+#   3. X-App-City header      – Rails.env.test? only; set explicitly by integration tests
+#   4. CF-IPCity header       – set by Cloudflare on every proxied request (production)
+#   5. Geocoder IP lookup     – server-side fallback when not behind Cloudflare
 #
 # Call via:
 #   CityLocator.call(request, dev_override: session[:dev_city_override])
@@ -40,6 +41,8 @@ class CityLocator
     name = normalize(name)
     return if name.blank?
 
+    # NOTE (MVP): Unicode names that share a parameterized form map to the same wall
+    # (e.g. "São Paulo" and "Sao Paulo" both produce "sao-paulo"). Intentional for now.
     City.new(name: name, slug: name.parameterize)
   end
 
@@ -64,8 +67,11 @@ class CityLocator
     ENV.fetch("LOCAL_CITY_FALLBACK", "San Francisco")
   end
 
-  # 3. X-App-City header — used in tests and internal tooling to explicitly set a city.
+  # 3. X-App-City header — test environment only.
+  #    Allows integration tests to set a city without geocoder or Cloudflare.
   def app_city_header
+    return unless Rails.env.test?
+
     request.get_header("HTTP_X_APP_CITY").presence
   end
 
@@ -76,7 +82,7 @@ class CityLocator
     request.get_header(CF_CITY_HEADER).presence
   end
 
-  # 4. Geocoder server-side lookup — fallback for staging / non-CF environments.
+  # 5. Geocoder server-side lookup — fallback for staging / non-CF environments.
   #    Result is cached in Rails.cache (see config/initializers/geocoder.rb).
   #    Skipped for local/private IPs to avoid meaningless lookups.
   def geocoded_city

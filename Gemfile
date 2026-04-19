@@ -42,6 +42,12 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# IP geolocation fallback when CF-IPCity header is absent
+gem "geocoder"
+
+# Registers Cloudflare IP ranges as trusted proxies so request.remote_ip is the real visitor IP
+gem "cloudflare-rails"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

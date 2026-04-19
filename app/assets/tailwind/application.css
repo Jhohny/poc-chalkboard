@@ -24,7 +24,7 @@
   }
 
   .note {
-    color: var(--chalk-color, rgba(240, 236, 224, 0.85));
+    color: var(--chalk-color, rgba(240, 236, 224, 0.82));
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.06);
     opacity: var(--note-opacity);
@@ -40,20 +40,23 @@
     border-color: rgba(255, 255, 255, 0.14);
   }
 
+  /* Glow is a reward, not a default — only on hover */
+  .note:hover p {
+    text-shadow: 0 0 12px currentColor;
+  }
 
-  .note--sky    { --chalk-color: rgba(220, 238, 255, 0.85); }
-  .note--amber  { --chalk-color: rgba(255, 248, 210, 0.85); }
-  .note--mint   { --chalk-color: rgba(208, 255, 228, 0.85); }
-  .note--coral  { --chalk-color: rgba(255, 224, 216, 0.85); }
-  .note--lilac  { --chalk-color: rgba(232, 218, 255, 0.85); }
-  .note--cloud  { --chalk-color: rgba(240, 240, 240, 0.85); }
-  .note--sun    { --chalk-color: rgba(255, 248, 198, 0.85); }
+  .note--sky    { --chalk-color: rgba(220, 238, 255, 0.82); }
+  .note--amber  { --chalk-color: rgba(255, 248, 210, 0.82); }
+  .note--mint   { --chalk-color: rgba(208, 255, 228, 0.82); }
+  .note--coral  { --chalk-color: rgba(255, 224, 216, 0.82); }
+  .note--lilac  { --chalk-color: rgba(232, 218, 255, 0.82); }
+  .note--cloud  { --chalk-color: rgba(240, 240, 240, 0.82); }
+  .note--sun    { --chalk-color: rgba(255, 248, 198, 0.82); }
 
   .note p {
     font-family: 'Caveat', cursive;
     font-size: 1.4rem;
     line-height: 1.55;
-    text-shadow: 0 0 18px currentColor;
   }
 
   .note .chalk-meta {

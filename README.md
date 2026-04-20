@@ -49,7 +49,7 @@ Switch your browser's preferred language to Spanish (or pass `Accept-Language: e
 
 `/admin/posts` is a minimal moderation dashboard behind HTTP basic auth. It lists all posts (reported first), shows `reports_count`, `hidden_at`, and a soft-delete button. Soft deletes set `hidden_at = now()`; the post is filtered out of the public feed by `Post.active` but remains in the DB for audit.
 
-A post is auto-hidden from the public feed when `reports_count >= Post::AUTO_HIDE_THRESHOLD` (currently 3). The admin can still see it and make the call explicitly.
+A post is auto-hidden from the public feed when `reports_count >= Post::AUTO_HIDE_THRESHOLD` (currently 5). The admin can still see it and make the call explicitly.
 
 ## Security Features
 

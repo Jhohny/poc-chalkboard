@@ -1,0 +1,15 @@
+<section class="gate age-gate">
+  <p class="gate__eyebrow"><%= t("age_gate.eyebrow") %></p>
+  <h1 class="gate__heading"><%= t("age_gate.heading") %></h1>
+  <p class="gate__body"><%= t("age_gate.body") %></p>
+
+  <div class="gate__actions">
+    <%= button_to t("age_gate.confirm"), age_confirmation_path, class: "gate__allow", method: :post %>
+  </div>
+
+  <p class="gate__fine-print">
+    <%= t("age_gate.fine_print_html",
+          terms: link_to(t("legal.terms_link"), terms_path),
+          privacy: link_to(t("legal.privacy_link"), privacy_path)) %>
+  </p>
+</section>

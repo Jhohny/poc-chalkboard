@@ -37,3 +37,18 @@ es:
   errors:
     no_location: "Se requiere ubicación."
     bad_coordinates: "Coordenadas inválidas."
+  age_gate:
+    eyebrow: "Antes de entrar"
+    heading: "¿Tienes 18 años o más?"
+    body: "Anon Wall está dirigido a personas adultas. Confirma tu edad para continuar."
+    confirm: "Tengo 18 años o más"
+    fine_print_html: "Al continuar aceptas los %{terms} y la %{privacy}."
+  legal:
+    terms_link: "Términos"
+    privacy_link: "Privacidad"
+    back: "← Volver al muro"
+    last_updated: "Última actualización: %{date}"
+    terms:
+      title: "Política de uso"
+    privacy:
+      title: "Privacidad"

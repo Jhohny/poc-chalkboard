@@ -4,6 +4,7 @@
 class PostsController < ApplicationController
   MAX_CANDIDATES = WallsController::MAX_CANDIDATES
 
+  before_action :require_age_confirmation!
   before_action :require_location!
 
   def index

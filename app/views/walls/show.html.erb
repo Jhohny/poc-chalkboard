@@ -1,7 +1,9 @@
 <% content_for :title, t("wall.title") %>
 
 <main class="proximity">
-  <% if location_known? %>
+  <% if !age_confirmed? %>
+    <%= render "walls/age_gate" %>
+  <% elsif location_known? %>
     <header class="proximity__header">
       <h1 class="proximity__title"><%= t("wall.title") %></h1>
       <p class="proximity__tagline"><%= t("wall.tagline") %></p>
@@ -15,4 +17,6 @@
   <% else %>
     <%= render "walls/location_gate" %>
   <% end %>
+
+  <%= render "shared/legal_footer" %>
 </main>

@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class ProximityControllerTest < ActionDispatch::IntegrationTest
+  setup { confirm_age! }
+
   test 'stores valid coordinates in session' do
     post proximity_url, params: { latitude: 37.7749, longitude: -122.4194 }, as: :json
 
@@ -38,5 +40,13 @@ class ProximityControllerTest < ActionDispatch::IntegrationTest
 
     get root_url
     assert_includes @response.body, I18n.t('gate.heading')
+  end
+
+  test 'rejects creation for unconfirmed visitors' do
+    reset!
+
+    post proximity_url, params: { latitude: 37.7749, longitude: -122.4194 }, as: :json
+
+    assert_response :unprocessable_entity
   end
 end

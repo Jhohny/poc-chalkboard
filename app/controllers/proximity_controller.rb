@@ -2,6 +2,8 @@
 
 # Accepts the visitor's approximate browser geolocation and stores it in session.
 class ProximityController < ApplicationController
+  before_action :require_age_confirmation!
+
   def create
     lat, lng = coordinate_params
     if valid_coordinates?(lat, lng)

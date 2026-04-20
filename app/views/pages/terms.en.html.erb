@@ -1,0 +1,72 @@
+<% content_for :title, t("legal.terms.title") %>
+
+<main class="legal">
+  <header class="legal__header">
+    <h1 class="legal__title"><%= t("legal.terms.title") %></h1>
+    <p class="legal__updated"><%= t("legal.last_updated", date: "2026-04-19") %></p>
+  </header>
+
+  <section class="legal__section">
+    <h2>1. The deal</h2>
+    <p>
+      Anon Wall is a hobby project. It lets people nearby leave short,
+      anonymous notes for each other. There are no accounts and no
+      profiles. By using it you agree to these terms. If you don't, close
+      the tab.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>2. You must be 18 or older</h2>
+    <p>
+      This service is intended for adults. By tapping "I'm 18 or older"
+      you confirm that you are at least 18 years of age. If you are not,
+      stop using the service.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>3. What you may post</h2>
+    <p>Keep notes short, anonymous, and human. Do not post:</p>
+    <ul>
+      <li>Threats, harassment, hate speech, or sexualized content involving minors.</li>
+      <li>Personal information about yourself or anyone else (names, phone numbers, addresses, workplaces).</li>
+      <li>Spam, advertising, links, referral codes, or automated content.</li>
+      <li>Anything illegal where you are, or anything that would put another person at risk.</li>
+    </ul>
+    <p>
+      We reserve the right to remove any note at any time and to block
+      any session or device that abuses the wall.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>4. Rate limits and duplicates</h2>
+    <p>
+      You can leave one note per minute, per session. Exact repeats are
+      rejected. Notes fade away automatically after forty-eight hours.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>5. No warranty</h2>
+    <p>
+      Anon Wall is provided "as is," with no guarantees of uptime,
+      accuracy, retention, or fitness for any purpose. Don't rely on it
+      for anything important. Don't use it to send messages you'd be
+      upset to lose.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>6. Changes</h2>
+    <p>
+      These terms may change. Continued use after a change means you
+      accept the updated terms.
+    </p>
+  </section>
+
+  <p class="legal__back">
+    <%= link_to t("legal.back"), root_path %>
+  </p>
+</main>

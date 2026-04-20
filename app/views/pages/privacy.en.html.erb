@@ -1,0 +1,83 @@
+<% content_for :title, t("legal.privacy.title") %>
+
+<main class="legal">
+  <header class="legal__header">
+    <h1 class="legal__title"><%= t("legal.privacy.title") %></h1>
+    <p class="legal__updated"><%= t("legal.last_updated", date: "2026-04-19") %></p>
+  </header>
+
+  <section class="legal__section">
+    <h2>What we collect</h2>
+    <ul>
+      <li>
+        <strong>Your approximate coordinates</strong>, when you tap
+        "Allow location." The coordinates are fuzzed before they are
+        ever stored — we shift them by a session-stable random offset
+        (about 500 metres) plus a small per-note jitter, so what we
+        save is close to where you are but never where you are.
+      </li>
+      <li>
+        <strong>A random session token</strong>, stored only in your
+        browser's session cookie. We use it to rate-limit notes and to
+        derive the privacy offset above. We do not link it to you.
+      </li>
+      <li>
+        <strong>The body of any note you submit</strong>, along with
+        the fuzzed coordinates and a timestamp. Notes delete
+        themselves after forty-eight hours.
+      </li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>What we don't collect</h2>
+    <ul>
+      <li>No account, email, phone number, or name.</li>
+      <li>No precise location. We never see or store the real coordinates.</li>
+      <li>No device identifiers beyond what the browser sends on a plain HTTP request.</li>
+      <li>No tracking pixels, no third-party analytics SDKs, no ads.</li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>Your controls</h2>
+    <ul>
+      <li>Clear your browser's cookies for this site to reset your session and your age confirmation.</li>
+      <li>Revoke location permission in your browser settings at any time.</li>
+      <li>Close the tab to stop sending any data.</li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>Retention</h2>
+    <p>
+      Notes are deleted forty-eight hours after posting. Session data
+      lives only as long as your browser session. We keep minimal
+      server logs (IP address, user agent, request path) for a short
+      window to debug abuse; these are not tied to note content.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>Infrastructure</h2>
+    <p>
+      The app is proxied by Cloudflare, which sees request metadata
+      and sets a short-lived geo hint we use to gate the feed. No note
+      content or coordinates are shared with any third party beyond
+      what is strictly required to deliver the page.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>Questions</h2>
+    <p>
+      This is a hobby project. If something feels wrong, stop using
+      the site. There's no support channel and no customer-service
+      inbox.
+    </p>
+  </section>
+
+  <p class="legal__back">
+    <%= link_to t("legal.back"), root_path %>
+  </p>
+</main>

@@ -4,6 +4,7 @@ require 'test_helper'
 
 class PostsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    confirm_age!
     post proximity_url, params: { latitude: 37.7749, longitude: -122.4194 }, as: :json
     assert_response :created
   end

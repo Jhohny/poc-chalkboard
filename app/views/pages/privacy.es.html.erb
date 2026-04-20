@@ -1,0 +1,86 @@
+<% content_for :title, t("legal.privacy.title") %>
+
+<main class="legal">
+  <header class="legal__header">
+    <h1 class="legal__title"><%= t("legal.privacy.title") %></h1>
+    <p class="legal__updated"><%= t("legal.last_updated", date: "2026-04-19") %></p>
+  </header>
+
+  <section class="legal__section">
+    <h2>Qué recopilamos</h2>
+    <ul>
+      <li>
+        <strong>Tus coordenadas aproximadas</strong>, cuando tocas
+        "Permitir ubicación". Las coordenadas se difuminan antes de
+        guardarse: las desplazamos con un offset aleatorio estable por
+        sesión (alrededor de 500 metros) más un pequeño jitter por
+        nota, así que lo que guardamos está cerca de tu ubicación
+        pero nunca es tu ubicación exacta.
+      </li>
+      <li>
+        <strong>Un token de sesión aleatorio</strong>, guardado solo
+        en la cookie de sesión de tu navegador. Lo usamos para limitar
+        la frecuencia de notas y para derivar el offset anterior. No
+        lo vinculamos contigo.
+      </li>
+      <li>
+        <strong>El cuerpo de cualquier nota que envíes</strong>, junto
+        con las coordenadas difuminadas y una marca de tiempo. Las
+        notas se eliminan solas a las cuarenta y ocho horas.
+      </li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>Qué no recopilamos</h2>
+    <ul>
+      <li>Ni cuenta, ni correo, ni teléfono, ni nombre.</li>
+      <li>Ubicación exacta no. Nunca vemos ni guardamos las coordenadas reales.</li>
+      <li>Ningún identificador de dispositivo más allá de lo que el navegador envía en una solicitud normal.</li>
+      <li>Ni píxeles de seguimiento, ni SDKs de analítica de terceros, ni anuncios.</li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>Tus controles</h2>
+    <ul>
+      <li>Borra las cookies del sitio en tu navegador para reiniciar la sesión y la confirmación de edad.</li>
+      <li>Revoca el permiso de ubicación en la configuración de tu navegador cuando quieras.</li>
+      <li>Cierra la pestaña para dejar de enviar datos.</li>
+    </ul>
+  </section>
+
+  <section class="legal__section">
+    <h2>Retención</h2>
+    <p>
+      Las notas se eliminan cuarenta y ocho horas después de
+      publicarse. Los datos de sesión viven solo mientras dure la
+      sesión de tu navegador. Conservamos registros mínimos del
+      servidor (IP, user agent, ruta) durante una ventana corta para
+      depurar abusos; no los asociamos al contenido de las notas.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>Infraestructura</h2>
+    <p>
+      La app pasa por Cloudflare, que ve metadatos de la solicitud y
+      añade una pista geográfica de corta duración que usamos para
+      habilitar el muro. No se comparte contenido ni coordenadas con
+      terceros más allá de lo estrictamente necesario para servir la
+      página.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>Dudas</h2>
+    <p>
+      Este es un proyecto experimental. Si algo no se siente bien, deja
+      de usar el sitio. No hay canal de soporte ni buzón de atención.
+    </p>
+  </section>
+
+  <p class="legal__back">
+    <%= link_to t("legal.back"), root_path %>
+  </p>
+</main>

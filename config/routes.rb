@@ -3,6 +3,10 @@
 Rails.application.routes.draw do
   root 'walls#show'
 
-  resource  :proximity, only: %i[create destroy], controller: 'proximity'
-  resources :posts,     only: %i[index create]
+  resource  :age_confirmation, only: %i[create destroy]
+  resource  :proximity,        only: %i[create destroy], controller: 'proximity'
+  resources :posts,            only: %i[index create]
+
+  get '/terms',   to: 'pages#terms',   as: :terms
+  get '/privacy', to: 'pages#privacy', as: :privacy
 end

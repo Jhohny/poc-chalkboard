@@ -1,0 +1,73 @@
+<% content_for :title, t("legal.terms.title") %>
+
+<main class="legal">
+  <header class="legal__header">
+    <h1 class="legal__title"><%= t("legal.terms.title") %></h1>
+    <p class="legal__updated"><%= t("legal.last_updated", date: "2026-04-19") %></p>
+  </header>
+
+  <section class="legal__section">
+    <h2>1. El trato</h2>
+    <p>
+      Anon Wall es un proyecto experimental. Permite que personas
+      cercanas dejen notas anónimas y cortas entre sí. No hay cuentas
+      ni perfiles. Al usarlo aceptas estos términos. Si no los aceptas,
+      cierra la pestaña.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>2. Debes tener 18 años o más</h2>
+    <p>
+      Este servicio está dirigido a personas adultas. Al tocar
+      "Tengo 18 años o más" confirmas que tienes al menos 18 años. Si
+      no es así, deja de usar el servicio.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>3. Qué puedes publicar</h2>
+    <p>Mantén las notas breves, anónimas y humanas. No publiques:</p>
+    <ul>
+      <li>Amenazas, acoso, discurso de odio ni contenido sexual que involucre a menores.</li>
+      <li>Información personal, tuya o de otras personas (nombres, teléfonos, direcciones, lugares de trabajo).</li>
+      <li>Spam, publicidad, enlaces, códigos de referido o contenido automatizado.</li>
+      <li>Nada que sea ilegal donde estás, ni nada que ponga a otra persona en riesgo.</li>
+    </ul>
+    <p>
+      Nos reservamos el derecho de eliminar cualquier nota en cualquier
+      momento y de bloquear sesiones o dispositivos que abusen del
+      muro.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>4. Límites y repeticiones</h2>
+    <p>
+      Puedes dejar una nota por minuto, por sesión. Las repeticiones
+      exactas se bloquean. Las notas se desvanecen automáticamente
+      después de cuarenta y ocho horas.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>5. Sin garantías</h2>
+    <p>
+      Anon Wall se ofrece "tal cual", sin garantías de disponibilidad,
+      exactitud, retención ni aptitud para ningún propósito. No lo uses
+      para nada importante ni envíes mensajes que te dolería perder.
+    </p>
+  </section>
+
+  <section class="legal__section">
+    <h2>6. Cambios</h2>
+    <p>
+      Estos términos pueden cambiar. Seguir usando el servicio después
+      de un cambio implica que aceptas los términos actualizados.
+    </p>
+  </section>
+
+  <p class="legal__back">
+    <%= link_to t("legal.back"), root_path %>
+  </p>
+</main>

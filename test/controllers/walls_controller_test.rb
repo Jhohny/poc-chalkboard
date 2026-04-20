@@ -3,7 +3,17 @@
 require 'test_helper'
 
 class WallsControllerTest < ActionDispatch::IntegrationTest
-  test 'renders the location gate when the visitor has no stored location' do
+  test 'renders the age gate for a brand-new visitor' do
+    get root_url
+
+    assert_response :success
+    assert_includes @response.body, I18n.t('age_gate.heading')
+    assert_not_includes @response.body, I18n.t('gate.heading')
+  end
+
+  test 'renders the location gate once age is confirmed' do
+    confirm_age!
+
     get root_url
 
     assert_response :success
@@ -11,7 +21,8 @@ class WallsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @response.body, posts(:one).body
   end
 
-  test 'renders nearby cards once the location is known' do
+  test 'renders nearby cards once age + location are known' do
+    confirm_age!
     post proximity_url, params: { latitude: 37.7749, longitude: -122.4194 }, as: :json
     assert_response :created
 
@@ -25,6 +36,6 @@ class WallsControllerTest < ActionDispatch::IntegrationTest
     get root_url, headers: { 'Accept-Language' => 'es' }
 
     assert_response :success
-    assert_includes @response.body, I18n.t('gate.heading', locale: :es)
+    assert_includes @response.body, I18n.t('age_gate.heading', locale: :es)
   end
 end

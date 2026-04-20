@@ -20,5 +20,13 @@ end
 module ActionDispatch
   class IntegrationTest
     include ActiveSupport::Testing::TimeHelpers
+
+    # Simulates the visitor tapping "I'm 18 or older" on the age gate.
+    # Most integration tests exercise the feed, which is gated behind
+    # age confirmation — call this in `setup` to get past it.
+    def confirm_age!
+      post age_confirmation_url
+      follow_redirect!
+    end
   end
 end

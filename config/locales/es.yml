@@ -43,6 +43,9 @@ es:
     body: "Anon Wall está dirigido a personas adultas. Confirma tu edad para continuar."
     confirm: "Tengo 18 años o más"
     fine_print_html: "Al continuar aceptas los %{terms} y la %{privacy}."
+  report:
+    submit: "Reportar"
+    aria: "Reportar esta nota"
   legal:
     terms_link: "Términos"
     privacy_link: "Privacidad"

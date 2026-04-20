@@ -200,6 +200,60 @@
     color: rgba(240, 236, 224, 0.95);
   }
 
+  /* ---------- Admin dashboard ---------- */
+
+  .admin {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
+    color: rgba(240, 236, 224, 0.9);
+  }
+
+  .admin__header h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .admin__notice {
+    color: rgba(180, 255, 200, 0.85);
+    font-size: 0.9rem;
+    min-height: 1.2em;
+  }
+
+  .admin__table {
+    width: 100%;
+    margin-top: 1.25rem;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .admin__table th,
+  .admin__table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: top;
+  }
+
+  .admin__row--hidden {
+    opacity: 0.5;
+  }
+
+  .admin__body {
+    max-width: 28rem;
+    word-break: break-word;
+  }
+
+  .admin__hide {
+    background: rgba(120, 30, 30, 0.4);
+    color: inherit;
+    border: 1px solid rgba(255, 120, 120, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+  }
+
   /* ---------- Card stack ---------- */
 
   .stack {
@@ -266,6 +320,25 @@
   .card__footer {
     font-size: 0.72rem;
     opacity: 0.5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card__report {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    font-size: 0.7rem;
+    opacity: 0.4;
+    cursor: pointer;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .card__report:hover {
+    opacity: 0.85;
+    text-decoration: underline;
   }
 
   .card--small .card__body  { font-size: 1.35rem; }

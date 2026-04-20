@@ -1,125 +1,99 @@
 # Anon Wall
 
-Anon Wall is a city-based anonymous digital wall for short text notes.
+Anon Wall is a proximity-based anonymous wall for short text notes. Visitors see the notes floating around where they're physically standing.
 
-The current MVP is a single public wall per detected city:
-
-- no login
-- random pseudonym and icon per browser session
+- no login; random pseudonym + icon per browser session
 - text-only notes up to `120` characters
 - `1` note per minute per session
-- exact repeat submissions blocked per session
+- exact repeats blocked per session
 - notes expire after `48` hours
-- notes fade as they age
-- live updates for viewers in the same city
+- adaptive radius (`3 / 8 / 15 / 25 / 50` km) — picks the smallest tier with at least 5 nearby notes
+- coordinates are fuzzed before they are stored (session-stable offset + per-note jitter)
+- i18n: English and Spanish, resolved from `Accept-Language`
 
 ## Stack
 
 - Ruby on Rails 8
 - PostgreSQL
-- Hotwire (`turbo-rails`, Stimulus)
+- Hotwire (`turbo-rails`, Stimulus) — polling only, no Turbo-Stream broadcast
 - Tailwind CSS
-- Solid Cable / Solid Queue / Solid Cache gems included in the app template
+- Solid Cable / Solid Queue / Solid Cache
+- Rack::Attack for IP rate limiting
 
 ## Local Setup
 
-Prerequisites:
-
-- Ruby matching the app's Bundler/Rails setup
-- PostgreSQL running locally
-- Bundler
-
-Install gems:
-
 ```bash
 bundle install
-```
-
-Create and migrate the database:
-
-```bash
 bundle exec rails db:prepare
-```
-
-## Run The App
-
-Use the development process manager:
-
-```bash
+bundle exec rails db:seed    # optional: 42 SF-anchored notes across every radius tier
 bin/dev
 ```
 
-That starts:
+Runs on `http://localhost:3000` (the project historically runs on `:3001` — check your `bin/dev` / `Procfile.dev`).
 
-- the Rails server
-- the Tailwind watcher
+`bin/dev` starts the Rails server and the Tailwind watcher.
 
-By default the app runs on `http://localhost:3000`.
+### Viewing in Spanish
 
-## City Detection In Development
+Switch your browser's preferred language to Spanish (or pass `Accept-Language: es` via curl). The active locale resolves per request — there is no cookie or route prefix.
 
-The app tries to determine the visitor's city from request location data or proxy headers.
+## Environment Variables
 
-For local development on `127.0.0.1` / `::1`, it falls back to:
+| Name | Scope | Purpose |
+| --- | --- | --- |
+| `APP_HOST` | production | Pins `config.hosts` so Host-header spoofing is rejected at the Rack layer. |
+| `ADMIN_USERNAME` | any | Username for HTTP basic auth on `/admin/posts`. Defaults to `admin`. |
+| `ADMIN_PASSWORD` | **required in production** | Password for `/admin/posts`. In production, a missing value falls back to a random throwaway — so the admin is locked out by default rather than exposed with a weak credential. In development, falls back to `admin`. |
 
-```bash
-San Francisco
-```
+## Admin
 
-You can override that fallback city when starting the app:
+`/admin/posts` is a minimal moderation dashboard behind HTTP basic auth. It lists all posts (reported first), shows `reports_count`, `hidden_at`, and a soft-delete button. Soft deletes set `hidden_at = now()`; the post is filtered out of the public feed by `Post.active` but remains in the DB for audit.
 
-```bash
-LOCAL_CITY_FALLBACK="Los Angeles" bin/dev
-```
+A post is auto-hidden from the public feed when `reports_count >= Post::AUTO_HIDE_THRESHOLD` (currently 3). The admin can still see it and make the call explicitly.
 
-The app also accepts a request header such as `X-App-City` for testing city-specific behavior.
+## Security Features
+
+- **IP rate limiting** (Rack::Attack): `POST /posts` 10/min, `POST /proximity` 20/hr, `POST /age_confirmation` 20/hr, `POST /posts/:id/report` 30/hr, all keyed on `request.ip`.
+- **Session-based rate limit** inside `Post#respect_rate_limit` — 1 note/minute/session (complements the IP layer).
+- **URL rejection** on post bodies — `http://`, `https://`, `www.`, and bare hosts rejected.
+- **Reporting** + auto-hide + admin soft-delete.
+- **CSP**: strict, no `'unsafe-inline'` on `style-src` or `script-src`; nonces are generated per request.
+- **force_ssl + HSTS** in production via `config.force_ssl`.
+- **Host header pinned** in production via `config.hosts = [ENV.fetch('APP_HOST')]`.
+- **Latitude/longitude filtered** from logs so raw browser coordinates never land in production log files.
+- **Age gate** (18+ self-confirmation) precedes the location gate.
 
 ## Run Tests
 
-Prepare the test database if needed:
-
 ```bash
 RAILS_ENV=test bundle exec rails db:prepare
-```
-
-Run the test suite:
-
-```bash
 bundle exec rails test
 ```
 
-## Lint
+Security scanners:
 
-Run RuboCop:
+```bash
+bundle exec brakeman -q        # expect 0 warnings
+bundle exec bundler-audit
+```
+
+## Lint
 
 ```bash
 bundle exec rubocop
 ```
 
-Note: the repository may still contain baseline RuboCop issues outside the feature-specific files cleaned up so far.
-
-## Current Product Behavior
-
-The homepage is the product itself, not a separate marketing site.
-
-If the app can detect a city:
-
-- it shows that city's whiteboard-style wall
-- new notes appear live for active viewers in that same city
-- older notes can be loaded as the user scrolls
-
-If the app cannot detect a supported city:
-
-- it shows `Service unavailable for your area`
+Baseline offenses from earlier phases remain; changed files should stay clean.
 
 ## Main App Areas
 
-- root wall page: `app/views/walls/show.html.erb`
-- note submission and pagination: `app/controllers/posts_controller.rb`
-- note rules and broadcast behavior: `app/models/post.rb`
-- city detection: `app/models/city_locator.rb`
-- session pseudonym/icon identity: `app/models/session_identity.rb`
-
-## Next Likely Step
-
-The current location logic is MVP-grade. A production-ready next step would be wiring a real IP geolocation provider instead of relying on request location best-effort behavior and forwarded headers.
+- root / feed: `app/views/walls/show.html.erb`
+- age gate: `app/views/walls/_age_gate.html.erb`
+- location gate: `app/views/walls/_location_gate.html.erb`
+- card stack: `app/views/posts/_card_stack.html.erb`
+- composer sheet: `app/views/posts/_composer_sheet.html.erb`
+- proximity querying + fuzzing: `app/models/concerns/proximity.rb`
+- post rules: `app/models/post.rb`, `app/models/concerns/body_policy.rb`
+- session pseudonym/icon: `app/models/session_identity.rb`
+- rate limiting: `config/initializers/rack_attack.rb`
+- admin: `app/controllers/admin/posts_controller.rb`

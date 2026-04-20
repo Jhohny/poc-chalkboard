@@ -22,9 +22,15 @@ export default class extends Controller {
     document.removeEventListener("keydown", this.keyHandler)
   }
 
-  cardTargetConnected() {
-    // New cards injected (create or polling). Keep the user on their current
-    // card; new ones prepend behind/before them in DOM order.
+  cardTargetConnected(card) {
+    // Inline `style="--card-rotate: ...; --card-opacity: ..."` on the server
+    // would trip CSP's style-src. Read the values from data attributes and
+    // apply them via JS (setProperty is permitted).
+    const rotate  = card.dataset.cardRotate
+    const opacity = card.dataset.cardOpacity
+    if (rotate  != null) card.style.setProperty("--card-rotate",  `${rotate}deg`)
+    if (opacity != null) card.style.setProperty("--card-opacity", opacity)
+
     this.render()
   }
 

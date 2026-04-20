@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_19_230946) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_20_053933) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,16 +19,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_230946) do
     t.string "color_variant", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
+    t.datetime "hidden_at"
     t.string "icon", null: false
     t.decimal "latitude", precision: 9, scale: 6, null: false
     t.decimal "longitude", precision: 9, scale: 6, null: false
     t.datetime "posted_at", null: false
     t.string "pseudonym", null: false
+    t.integer "reports_count", default: 0, null: false
     t.integer "rotation", null: false
     t.string "session_token_digest", null: false
     t.string "size_variant", null: false
     t.datetime "updated_at", null: false
     t.index ["expires_at"], name: "index_posts_on_expires_at"
+    t.index ["hidden_at"], name: "index_posts_on_hidden_at"
     t.index ["latitude", "longitude"], name: "index_posts_on_latitude_and_longitude"
     t.index ["posted_at", "id"], name: "index_posts_on_posted_at_and_id"
     t.index ["session_token_digest", "posted_at"], name: "index_posts_on_session_token_digest_and_posted_at"

@@ -43,6 +43,9 @@ en:
     body: "Anon Wall is intended for adults. Please confirm your age to continue."
     confirm: "I'm 18 or older"
     fine_print_html: "By continuing you accept the %{terms} and %{privacy}."
+  report:
+    submit: "Report"
+    aria: "Report this note"
   legal:
     terms_link: "Terms"
     privacy_link: "Privacy"

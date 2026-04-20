@@ -4,7 +4,8 @@
   data-feed-target="card"
   data-card-distance-km="<%= post.read_attribute(:distance_km) || 0 %>"
   data-card-posted-at="<%= post.posted_at.iso8601 %>"
-  style="--card-rotate: <%= post.note_rotation %>deg; --card-opacity: <%= post.note_opacity %>;"
+  data-card-rotate="<%= post.note_rotation %>"
+  data-card-opacity="<%= post.note_opacity %>"
 >
   <header class="card__meta">
     <span class="card__identity"><%= post.icon %> <%= post.pseudonym %></span>
@@ -13,5 +14,11 @@
   <p class="card__body"><%= post.body %></p>
   <footer class="card__footer">
     <time datetime="<%= post.posted_at.iso8601 %>"><%= time_ago_phrase(post) %></time>
+    <%= button_to t("report.submit"),
+                  post_report_path(post),
+                  method: :post,
+                  form: { data: { turbo_stream: true } },
+                  class: "card__report",
+                  aria: { label: t("report.aria") } %>
   </footer>
 </article>

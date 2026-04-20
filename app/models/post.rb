@@ -3,10 +3,12 @@
 # A single anonymous note pinned to a set of (fuzzed) coordinates.
 class Post < ApplicationRecord
   include Proximity
+  include BodyPolicy
 
   MAX_BODY_LENGTH = 120
   POST_COOLDOWN = 1.minute
   LIFETIME = 48.hours
+  AUTO_HIDE_THRESHOLD = 5
   COLOR_VARIANTS = %w[sky amber mint coral lilac cloud sun].freeze
   SIZE_VARIANTS = %w[small medium large].freeze
 
@@ -30,7 +32,11 @@ class Post < ApplicationRecord
   validate :respect_rate_limit, on: :create
   validate :avoid_exact_repeat, on: :create
 
-  scope :active, -> { where('expires_at > ?', Time.current) }
+  scope :active, lambda {
+    where(hidden_at: nil)
+      .where('reports_count < ?', AUTO_HIDE_THRESHOLD)
+      .where('expires_at > ?', Time.current)
+  }
   scope :newest_first, -> { order(posted_at: :desc, id: :desc) }
 
   def assign_proximity_context(location:, identity:)

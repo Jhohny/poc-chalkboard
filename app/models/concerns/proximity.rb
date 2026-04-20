@@ -16,27 +16,32 @@ module Proximity
   MIN_BATCH = 5
   MAX_RADIUS_KM = 50
 
+  # Haversine distance in kilometres. Lat/lng come in as bind parameters so
+  # this stays safe to use with `sanitize_sql_array`.
+  DISTANCE_SQL = <<~SQL.squish.freeze
+    (#{EARTH_RADIUS_KM} * acos(least(1.0,
+      cos(radians(?)) * cos(radians(latitude)) *
+      cos(radians(longitude) - radians(?)) +
+      sin(radians(?)) * sin(radians(latitude))
+    )))
+  SQL
+
   included do
     scope :within_km, lambda { |lat, lng, radius_km|
-      haversine = Arel.sql(distance_expression(lat, lng))
-      select(Arel.sql("#{table_name}.*, #{distance_expression(lat, lng)} AS distance_km"))
-        .where("#{haversine} <= ?", radius_km)
+      lat_f = lat.to_f
+      lng_f = lng.to_f
+      r_f   = radius_km.to_f
+
+      selection = sanitize_sql_array(["#{table_name}.*, #{DISTANCE_SQL} AS distance_km",
+                                      lat_f, lng_f, lat_f])
+      condition = sanitize_sql_array(["#{DISTANCE_SQL} <= ?",
+                                      lat_f, lng_f, lat_f, r_f])
+
+      select(Arel.sql(selection)).where(Arel.sql(condition))
     }
   end
 
   class_methods do
-    def distance_expression(lat, lng)
-      lat_f = lat.to_f
-      lng_f = lng.to_f
-      "(#{EARTH_RADIUS_KM} * acos(" \
-        'least(1.0, ' \
-        "cos(radians(#{lat_f})) * cos(radians(latitude)) * " \
-        "cos(radians(longitude) - radians(#{lng_f})) + " \
-        "sin(radians(#{lat_f})) * sin(radians(latitude))" \
-        '))' \
-        ')'
-    end
-
     def tier_for(distance_km)
       RADIUS_TIERS_KM.find { |tier| distance_km <= tier } || MAX_RADIUS_KM
     end

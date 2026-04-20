@@ -39,7 +39,7 @@ module Rack
       [
         429,
         { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s },
-        ["Too many requests. Try again later.\n"]
+        [ "Too many requests. Try again later.\n" ]
       ]
     end
   end

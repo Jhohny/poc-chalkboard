@@ -12,7 +12,7 @@ module Proximity
   EARTH_RADIUS_KM = 6371.0
   FUZZ_DEGREES = 0.005
   JITTER_DEGREES = 0.001
-  RADIUS_TIERS_KM = [3, 8, 15, 25, 50].freeze
+  RADIUS_TIERS_KM = [ 3, 8, 15, 25, 50 ].freeze
   MIN_BATCH = 5
   MAX_RADIUS_KM = 50
 
@@ -32,10 +32,10 @@ module Proximity
       lng_f = lng.to_f
       r_f   = radius_km.to_f
 
-      selection = sanitize_sql_array(["#{table_name}.*, #{DISTANCE_SQL} AS distance_km",
-                                      lat_f, lng_f, lat_f])
-      condition = sanitize_sql_array(["#{DISTANCE_SQL} <= ?",
-                                      lat_f, lng_f, lat_f, r_f])
+      selection = sanitize_sql_array([ "#{table_name}.*, #{DISTANCE_SQL} AS distance_km",
+                                      lat_f, lng_f, lat_f ])
+      condition = sanitize_sql_array([ "#{DISTANCE_SQL} <= ?",
+                                      lat_f, lng_f, lat_f, r_f ])
 
       select(Arel.sql(selection)).where(Arel.sql(condition))
     }

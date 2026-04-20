@@ -37,7 +37,7 @@ class PostTest < ActiveSupport::TestCase
     offsets = 5.times.map do
       post = Post.new(body: SecureRandom.hex(4))
       post.assign_proximity_context(location: @location, identity: identity)
-      [post.latitude.to_f - @location.latitude, post.longitude.to_f - @location.longitude]
+      [ post.latitude.to_f - @location.latitude, post.longitude.to_f - @location.longitude ]
     end
 
     # After subtracting the ±JITTER_DEGREES per-post noise, all offsets collapse
@@ -103,10 +103,10 @@ class PostTest < ActiveSupport::TestCase
   end
 
   test 'choose_radius picks smallest tier meeting MIN_BATCH' do
-    distances = [1, 2, 2.5, 2.9, 3, 4, 7]
+    distances = [ 1, 2, 2.5, 2.9, 3, 4, 7 ]
     assert_equal 3, Post.choose_radius(distances)
 
-    sparse = [1, 4, 9, 10, 24]
+    sparse = [ 1, 4, 9, 10, 24 ]
     assert_equal 25, Post.choose_radius(sparse)
   end
 end

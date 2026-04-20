@@ -18,8 +18,8 @@ class CreatePosts < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :posts, [ :city_slug, :posted_at, :id ]
+    add_index :posts, %i[city_slug posted_at id]
     add_index :posts, :expires_at
-    add_index :posts, [ :session_token_digest, :posted_at ]
+    add_index :posts, %i[session_token_digest posted_at]
   end
 end

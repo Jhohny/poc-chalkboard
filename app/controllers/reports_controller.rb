@@ -38,6 +38,6 @@ class ReportsController < ApplicationController
   end
 
   def remember_report(id)
-    session[:reported_post_ids] = (reported_post_ids + [id]).uniq.last(200)
+    session[:reported_post_ids] = (reported_post_ids + [ id ]).uniq.last(200)
   end
 end

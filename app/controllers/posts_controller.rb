@@ -33,7 +33,7 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.expect(post: [:body])
+    params.expect(post: [ :body ])
   end
 
   def new_cards_since(timestamp_iso)

@@ -72,7 +72,7 @@ class Post < ApplicationRecord
     age_hours = (Time.current - posted_at) / 3600.0
     return 1.0 if age_hours <= 2
 
-    [0.0, 1 - ((age_hours - 2) / 46.0)].max
+    [ 0.0, 1 - ((age_hours - 2) / 46.0) ].max
   end
 
   def normalize_body

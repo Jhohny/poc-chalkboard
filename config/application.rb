@@ -1,6 +1,6 @@
-require_relative "boot"
+require_relative 'boot'
 
-require "rails/all"
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -16,7 +16,7 @@ module PocAnonWall
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.i18n.available_locales = [ :en, :es ]
+    config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en
   end
 end

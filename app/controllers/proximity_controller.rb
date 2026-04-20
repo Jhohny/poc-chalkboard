@@ -23,9 +23,9 @@ class ProximityController < ApplicationController
   private
 
   def coordinate_params
-    [params[:latitude], params[:longitude]].map { |v| v.present? ? Float(v) : nil }
+    [ params[:latitude], params[:longitude] ].map { |v| v.present? ? Float(v) : nil }
   rescue ArgumentError, TypeError
-    [nil, nil]
+    [ nil, nil ]
   end
 
   def valid_coordinates?(lat, lng)

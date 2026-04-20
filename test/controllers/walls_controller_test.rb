@@ -3,18 +3,28 @@
 require 'test_helper'
 
 class WallsControllerTest < ActionDispatch::IntegrationTest
-  test 'shows the detected city wall' do
-    get root_url, headers: { 'X-App-City' => 'San Francisco' }
-
-    assert_response :success
-    assert_includes @response.body, 'San Francisco is writing.'
-    assert_includes @response.body, 'First pinned thought'
-  end
-
-  test 'shows unavailable state when city detection fails' do
+  test 'renders the location gate when the visitor has no stored location' do
     get root_url
 
     assert_response :success
-    assert_includes @response.body, 'Service unavailable for your area'
+    assert_includes @response.body, I18n.t('gate.heading')
+    assert_not_includes @response.body, posts(:one).body
+  end
+
+  test 'renders nearby cards once the location is known' do
+    post proximity_url, params: { latitude: 37.7749, longitude: -122.4194 }, as: :json
+    assert_response :created
+
+    get root_url
+
+    assert_response :success
+    assert_includes @response.body, posts(:one).body
+  end
+
+  test 'Spanish locale renders translated copy' do
+    get root_url, headers: { 'Accept-Language' => 'es' }
+
+    assert_response :success
+    assert_includes @response.body, I18n.t('gate.heading', locale: :es)
   end
 end

@@ -1,31 +1,39 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  wall:
+    title: "Anon Wall"
+    tagline: "The thoughts floating around where you stand."
+    empty: "Quiet nearby right now. Leave the first note."
+    end_of_stack: "That's all nearby for now."
+    reload: "Refresh"
+  gate:
+    eyebrow: "Before we begin"
+    heading: "See anonymous notes from people near you."
+    body: "We only use approximate location to show nearby posts."
+    allow: "Allow location"
+    learn_more: "Learn more"
+  locked:
+    eyebrow: "Location needed"
+    heading: "Nearby notes need approximate location."
+    body: "We never show your exact position."
+    enable: "Enable location"
+    why: "Why we ask"
+    denied: "You blocked location. Enable it in your browser settings to continue."
+  composer:
+    floating_button: "Leave a note here"
+    heading: "Write a note for people nearby"
+    posting_as: "Posting as"
+    limit_hint: "1 note / minute"
+    placeholder: "Small thought for the people near you..."
+    submit: "Leave it here"
+    disclaimer: "Text only. Exact repeats are blocked. Notes fade away after two days."
+    pinned: "Pinned nearby."
+  distance:
+    very_close: "nearby"
+    close: "~500 m away"
+    near: "~3 km away"
+    around: "around town"
+    far: "wider area"
+    time_ago: "%{time} ago"
+  errors:
+    no_location: "Location required."
+    bad_coordinates: "Invalid coordinates."

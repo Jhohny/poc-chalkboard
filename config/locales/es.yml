@@ -1,0 +1,39 @@
+es:
+  wall:
+    title: "Muro Anónimo"
+    tagline: "Los pensamientos que flotan donde estás parado."
+    empty: "Todo tranquilo por aquí. Deja la primera nota."
+    end_of_stack: "Eso es todo por ahora."
+    reload: "Actualizar"
+  gate:
+    eyebrow: "Antes de empezar"
+    heading: "Lee notas anónimas de gente cerca de ti."
+    body: "Solo usamos tu ubicación aproximada para mostrar notas cercanas."
+    allow: "Permitir ubicación"
+    learn_more: "Más información"
+  locked:
+    eyebrow: "Necesitamos ubicación"
+    heading: "Las notas cercanas necesitan ubicación aproximada."
+    body: "Nunca mostramos tu posición exacta."
+    enable: "Activar ubicación"
+    why: "Por qué la pedimos"
+    denied: "Bloqueaste la ubicación. Actívala en la configuración del navegador para continuar."
+  composer:
+    floating_button: "Deja una nota aquí"
+    heading: "Escribe una nota para la gente cercana"
+    posting_as: "Publicas como"
+    limit_hint: "1 nota / minuto"
+    placeholder: "Un pensamiento corto para quien pase cerca..."
+    submit: "Déjala aquí"
+    disclaimer: "Solo texto. Las repeticiones exactas se bloquean. Las notas se desvanecen a los dos días."
+    pinned: "Dejada cerca."
+  distance:
+    very_close: "muy cerca"
+    close: "~500 m"
+    near: "~3 km"
+    around: "por la zona"
+    far: "zona amplia"
+    time_ago: "hace %{time}"
+  errors:
+    no_location: "Se requiere ubicación."
+    bad_coordinates: "Coordenadas inválidas."

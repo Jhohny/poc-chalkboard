@@ -1,116 +1,122 @@
-# Local development seeds — populates the San Francisco wall with 120+ notes.
-# Run with: bundle exec rails db:seed
-# Safe to re-run: clears existing seed posts first (identified by seed digest prefix).
+# frozen_string_literal: true
 
-SEED_CITY_SLUG = ENV.fetch("LOCAL_CITY_FALLBACK", "San Francisco").parameterize.freeze
-SEED_CITY_NAME = ENV.fetch("LOCAL_CITY_FALLBACK", "San Francisco").freeze
+# Local development seeds — anchors posts around San Francisco and
+# sprinkles them across every radius tier (Very Close → Farther Out)
+# so the adaptive-radius picker and distance labels can be exercised.
+#
+# Run with: bundle exec rails db:seed
+# Safe to re-run: clears any previously seeded post (identified by
+# the `seed_` prefix on its session_token_digest) before inserting.
 
 ICONS      = %w[✦ ★ ☺ ☼ ✎ ♣ ♠ ♥ ♦ ☁ ☕ ☘ ☾ ♪].freeze
 ADJECTIVES = %w[Quiet Local Neon Wandering Tin Soft Hidden Electric Paper Sidewalk North South].freeze
 NOUNS      = %w[Sparrow Lantern Window Echo Marker Comet Kite River Brick Moth Signal Marble Haze].freeze
 
-BODIES = [
-  # short (≤32 chars → small)
+# Neighborhood anchors — (lat, lng) in decimal degrees, approximate
+# distance from the dev anchor (SF, 37.7749 / -122.4194) in km.
+NEIGHBORHOODS = [
+  { name: "Mission",        lat: 37.7599, lng: -122.4148, km: 1.7  },
+  { name: "Financial",      lat: 37.7946, lng: -122.3999, km: 2.7  },
+  { name: "Haight",         lat: 37.7692, lng: -122.4481, km: 2.6  },
+  { name: "Dogpatch",       lat: 37.7580, lng: -122.3874, km: 3.3  },
+  { name: "Sunset",         lat: 37.7546, lng: -122.4930, km: 6.4  },
+  { name: "Richmond",       lat: 37.7806, lng: -122.4644, km: 4.0  },
+  { name: "Presidio",       lat: 37.7989, lng: -122.4662, km: 4.8  },
+  { name: "Daly City",      lat: 37.6879, lng: -122.4702, km: 10.3 },
+  { name: "Oakland",        lat: 37.8044, lng: -122.2712, km: 13.3 },
+  { name: "Sausalito",      lat: 37.8591, lng: -122.4853, km: 11.9 },
+  { name: "Berkeley",       lat: 37.8715, lng: -122.2730, km: 17.0 },
+  { name: "South SF",       lat: 37.6547, lng: -122.4077, km: 13.4 },
+  { name: "San Mateo",      lat: 37.5630, lng: -122.3255, km: 24.8 },
+  { name: "Palo Alto",      lat: 37.4419, lng: -122.1430, km: 45.3 }
+].freeze
+
+BODIES_EN = [
   "fog rolled in early today",
   "the 38 was actually on time",
   "someone left flowers on my stoop",
-  "coffee shop is full again",
-  "quiet morning, rare thing",
   "pigeons won again",
   "smells like rain finally",
-  "the light here is different",
-  "nobody talks on bart",
+  "nobody talks on BART",
   "lost my umbrella twice this week",
-  "sourdough everywhere, I love it",
-  "construction on 24th, always",
-  "good bagel energy today",
   "the hills are brutal, worth it",
   "saw a coyote near the park",
   "mission sunset is unreal",
-  "cold even in july, still love it",
   "just moved here, send help",
-  "tech layoffs hit my block hard",
   "the city smells different at 2am",
-  # medium (33–80 chars → medium)
-  "bus driver waved at a dog on the sidewalk and honestly that saved my day",
-  "overheard someone explain nfts to their grandma at the farmers market",
+  "overheard someone explain NFTs to their grandma at the farmers market",
   "third coffee of the day and I still cannot figure out what I'm doing here",
   "the mural on Valencia got painted over and I'm still not over it",
   "there's a guy who plays cello outside Dolores every Saturday, legend",
-  "rent went up again. roommate meeting tonight. vibes are not great",
   "someone left a perfectly good chair outside, I took it, no regrets",
   "the sunset from twin peaks tonight was worth every step of the hike",
-  "my neighbor started a sourdough club, I've been roped in, send help",
   "fog is back and honestly I needed the reminder that summer is fake here",
-  "the burritos on mission are a religion and I am a believer",
-  "accidentally walked into a film shoot on my way to the laundromat",
-  "every coffee shop now has a two hour limit, feels like we lost something",
-  "golden gate was completely invisible today, just vibes and gray",
   "finally got into that ramen spot with the hour-long wait, worth it",
   "the library on civic center is underrated, been hiding there all week",
-  "ran into my old roommate at the same spot we met three years ago wild",
-  "transit is broken again but a stranger shared their umbrella so even",
-  "the dog count at Alamo Square today was genuinely impressive, maybe 40",
-  "someone spray painted 'stay weird' on the wall they're about to tear down",
-  "woke up at 6 to see the bay and it was completely worth it, do it once",
-  "the coffee here costs more than my first paycheck did but it is perfect",
-  # long (81–120 chars → large)
-  "I've lived here for five years and the fog still makes me stop and stare every single time it rolls in over Twin Peaks",
-  "the diversity on a single muni car is something I think about a lot — every language, every age, everyone just going somewhere",
-  "this city is expensive and chaotic and sometimes completely broken but it's mine now and I don't want to be anywhere else honestly",
-  "wrote half a novel in that Haight café that closed last year and I keep walking by the empty storefront like a ghost, it's embarrassing",
-  "someone in my building has been leaving little notes in the elevator for six months, tiny jokes, tiny poems, I hope they never stop",
-  "the homelessness here is heartbreaking and I don't have answers but I think pretending not to see people is making all of us worse",
-  "there are microclimates within two blocks of my apartment and I find it genuinely delightful that the weather has opinions about streets",
-  "my landlord raised rent and my neighbor threw a block party the same weekend and both things feel equally San Francisco to me somehow",
-  "you can tell a lot about a city by its 2am crowd and this city's 2am crowd is tired and hungry and kind and a little bit lost, perfect",
-  "the bay at low tide on a tuesday when no one else is around is the most honest version of this city I've ever seen and I keep going back",
-  "been here three months and still can't tell if I'm a local or just a tourist with an apartment, probably both, probably that's the point",
-  "every neighborhood feels like its own city and moving between them in one afternoon is one of the small free things I love about living here",
+  "someone spray-painted 'stay weird' on the wall they're about to tear down",
+  "every neighborhood feels like its own city and I love that"
 ].freeze
 
-# Remove any previously seeded posts so re-running stays clean
+BODIES_ES = [
+  "huele a lluvia esta noche",
+  "alguien dejó flores en el banco otra vez",
+  "el café aquí es una religión",
+  "perdí el bus, otra vez",
+  "se escucha una trompeta cerca",
+  "el gato del vecino vino a visitarme",
+  "hoy la ciudad está callada y lo agradezco",
+  "encontré una librería escondida entre dos bares",
+  "los atardeceres aquí son distintos cada día",
+  "alguien está practicando piano a dos calles",
+  "caminé sin rumbo y encontré una panadería nueva",
+  "me encantan las pequeñas cosas que nadie nota"
+].freeze
+
+BODIES = (BODIES_EN + BODIES_ES).freeze
+
+# Wipe previously seeded rows so re-runs stay clean
 Post.where("session_token_digest LIKE 'seed_%'").delete_all
 
 now   = Time.current
 posts = []
 
-1030.times do |i|
-  pseudonym = "#{ADJECTIVES.sample} #{NOUNS.sample}"
-  icon      = ICONS.sample
-  body      = BODIES[i % BODIES.length]
+# ~3 posts per neighborhood — gives good density in close tiers
+# and still lets distant neighborhoods show up under the widener.
+NEIGHBORHOODS.each_with_index do |hood, hood_idx|
+  3.times do |j|
+    body = BODIES.sample
 
-  # Spread across the last 47 h so notes span the full opacity range
-  posted_at  = now - rand(0..(47 * 3600)).seconds
-  expires_at = posted_at + Post::LIFETIME
+    # A small jitter (~100 m) so same-neighborhood posts don't colocate.
+    lat = hood[:lat] + rand(-0.001..0.001)
+    lng = hood[:lng] + rand(-0.001..0.001)
 
-  rotation     = rand(-4..4)
-  x_position   = rand(-22..22)
-  y_position   = rand(0..26)
-  color_variant = Post::COLOR_VARIANTS.sample
-  size_variant  = if body.length <= 32 then "small"
-                  elsif body.length <= 80 then "medium"
-                  else "large"
-                  end
+    posted_at  = now - rand(5..(47 * 60)).minutes
+    expires_at = posted_at + Post::LIFETIME
 
-  posts << {
-    city_slug:            SEED_CITY_SLUG,
-    city_name:            SEED_CITY_NAME,
-    pseudonym:            pseudonym,
-    icon:                 icon,
-    body:                 body,
-    posted_at:            posted_at,
-    expires_at:           expires_at,
-    session_token_digest: "seed_#{i}_#{SecureRandom.hex(8)}",
-    rotation:             rotation,
-    x_position:           x_position,
-    y_position:           y_position,
-    color_variant:        color_variant,
-    size_variant:         size_variant,
-    created_at:           posted_at,
-    updated_at:           posted_at
-  }
+    size = if body.length <= 32 then "small"
+           elsif body.length <= 80 then "medium"
+           else "large"
+           end
+
+    posts << {
+      pseudonym:            "#{ADJECTIVES.sample} #{NOUNS.sample}",
+      icon:                 ICONS.sample,
+      body:                 body,
+      latitude:             lat.round(6),
+      longitude:            lng.round(6),
+      rotation:             rand(-4..4),
+      color_variant:        Post::COLOR_VARIANTS.sample,
+      size_variant:         size,
+      posted_at:            posted_at,
+      expires_at:           expires_at,
+      session_token_digest: "seed_#{hood_idx}_#{j}_#{SecureRandom.hex(6)}",
+      created_at:           posted_at,
+      updated_at:           posted_at
+    }
+  end
 end
 
 Post.insert_all!(posts)
-puts "Seeded #{posts.size} posts for #{SEED_CITY_NAME} (#{SEED_CITY_SLUG})"
+
+puts "Seeded #{posts.size} posts across #{NEIGHBORHOODS.size} neighborhoods " \
+     "(anchor: San Francisco 37.7749, -122.4194)"

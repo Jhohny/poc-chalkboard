@@ -1,0 +1,43 @@
+<div
+  id="composer"
+  class="composer"
+  data-controller="sheet composer"
+  data-composer-limit-value="<%= Post::MAX_BODY_LENGTH %>"
+>
+  <button type="button" class="composer__fab" data-action="sheet#open" data-sheet-target="fab">
+    ✎ <%= t("composer.floating_button") %>
+  </button>
+
+  <div class="composer__sheet" data-sheet-target="panel" hidden>
+    <div class="composer__header">
+      <div>
+        <p class="composer__eyebrow"><%= t("composer.posting_as") %></p>
+        <p class="composer__identity"><%= identity.icon %> <%= identity.pseudonym %></p>
+      </div>
+      <button type="button" class="composer__close" data-action="sheet#close" aria-label="Close">×</button>
+    </div>
+
+    <% if status_message.present? %>
+      <p class="composer__status"><%= status_message %></p>
+    <% end %>
+
+    <% if post.errors.any? %>
+      <p class="composer__errors"><%= post.errors.full_messages.to_sentence %></p>
+    <% end %>
+
+    <%= form_with model: post, url: posts_path, class: "composer__form" do |form| %>
+      <div class="composer__field">
+        <%= form.text_area :body,
+              rows: 4,
+              maxlength: Post::MAX_BODY_LENGTH,
+              placeholder: t("composer.placeholder"),
+              data: { action: "input->composer#updateCounter", composer_target: "input" } %>
+        <span class="composer__counter" data-composer-target="counter"><%= Post::MAX_BODY_LENGTH %></span>
+      </div>
+
+      <p class="composer__disclaimer"><%= t("composer.disclaimer") %></p>
+
+      <%= form.submit t("composer.submit"), class: "composer__submit" %>
+    <% end %>
+  </div>
+</div>

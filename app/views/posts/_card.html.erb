@@ -1,0 +1,17 @@
+<article
+  id="<%= dom_id(post) %>"
+  class="card card--<%= post.color_variant %> card--<%= post.size_variant %>"
+  data-feed-target="card"
+  data-card-distance-km="<%= post.read_attribute(:distance_km) || 0 %>"
+  data-card-posted-at="<%= post.posted_at.iso8601 %>"
+  style="--card-rotate: <%= post.note_rotation %>deg; --card-opacity: <%= post.note_opacity %>;"
+>
+  <header class="card__meta">
+    <span class="card__identity"><%= post.icon %> <%= post.pseudonym %></span>
+    <span class="card__distance"><%= distance_band_label(post.read_attribute(:distance_km)&.to_f) %></span>
+  </header>
+  <p class="card__body"><%= post.body %></p>
+  <footer class="card__footer">
+    <time datetime="<%= post.posted_at.iso8601 %>"><%= time_ago_phrase(post) %></time>
+  </footer>
+</article>

@@ -1,0 +1,15 @@
+<section class="gate" data-controller="location-gate" data-location-gate-url-value="<%= proximity_path %>">
+  <p class="gate__eyebrow"><%= t("gate.eyebrow") %></p>
+  <h1 class="gate__heading"><%= t("gate.heading") %></h1>
+  <p class="gate__body"><%= t("gate.body") %></p>
+
+  <div class="gate__actions">
+    <button type="button" class="gate__allow" data-action="location-gate#requestLocation" data-location-gate-target="allowButton">
+      <%= t("gate.allow") %>
+    </button>
+  </div>
+
+  <p class="gate__denied" data-location-gate-target="denied" hidden>
+    <%= t("locked.denied") %>
+  </p>
+</section>

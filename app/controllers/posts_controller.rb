@@ -1,27 +1,29 @@
 # frozen_string_literal: true
 
-# Handles wall note pagination and submission.
+# Handles note submission and polling for new nearby notes.
 class PostsController < ApplicationController
-  PER_PAGE = WallsController::PER_PAGE
+  MAX_CANDIDATES = WallsController::MAX_CANDIDATES
 
-  before_action :require_city!
+  before_action :require_location!
 
   def index
-    @posts = posts_scope
-    @next_cursor = @posts.last&.posted_at&.to_i
+    @cards = new_cards_since(params[:since])
 
-    render turbo_stream: [
-      turbo_stream.append('wall_posts', partial: 'posts/post', collection: @posts, as: :post),
-      turbo_stream.replace('wall_pagination', partial: 'posts/pagination', locals: { next_cursor: @next_cursor })
-    ]
+    render turbo_stream: turbo_stream.prepend(
+      'card_stack',
+      partial: 'posts/card',
+      collection: @cards,
+      as: :post
+    )
   end
 
   def create
     @post = Post.new(post_params)
-    @post.assign_wall_context(city: current_city, identity: session_identity)
+    @post.assign_proximity_context(location: current_proximity, identity: session_identity)
 
     if @post.save
-      render_composer(post: Post.new, status_message: "Pinned to #{current_city.name}.")
+      render_composer(post: Post.new, status_message: t('composer.pinned'),
+                      prepend_card: @post)
     else
       render_composer(post: @post, status_message: nil, status: :unprocessable_entity)
     end
@@ -33,30 +35,38 @@ class PostsController < ApplicationController
     params.expect(post: [:body])
   end
 
-  def posts_scope
-    scope = Post.visible_in_city(current_city.slug)
-    scope = scope.where('posted_at < ?', Time.at(params[:before].to_i)) if params[:before].present?
-    scope.limit(PER_PAGE)
+  def new_cards_since(timestamp_iso)
+    scope = Post.active
+                .within_km(current_proximity.latitude, current_proximity.longitude, current_radius_or_default)
+                .limit(MAX_CANDIDATES)
+    scope = scope.where('posted_at > ?', Time.zone.parse(timestamp_iso)) if timestamp_iso.present?
+    scope.sort_by { |p| -p.ranked_score }
   end
 
-  def require_city!
-    head :unprocessable_entity unless current_city
+  def current_radius_or_default
+    current_radius_km || Proximity::MAX_RADIUS_KM
   end
 
-  def composer_locals(post, status_message)
-    {
-      post: post,
-      city: current_city,
-      identity: session_identity,
-      status_message: status_message
-    }
+  def require_location!
+    return if location_known?
+
+    respond_to do |format|
+      format.turbo_stream { head :unprocessable_entity }
+      format.html         { head :unprocessable_entity }
+      format.any          { head :unprocessable_entity }
+    end
   end
 
-  def render_composer(post:, status_message:, status: :ok)
-    render turbo_stream: turbo_stream.replace(
-      'composer',
-      partial: 'posts/composer',
-      locals: composer_locals(post, status_message)
-    ), status: status
+  def render_composer(post:, status_message:, status: :ok, prepend_card: nil)
+    streams = [
+      turbo_stream.replace(
+        'composer',
+        partial: 'posts/composer_sheet',
+        locals: { post: post, identity: session_identity, status_message: status_message }
+      )
+    ]
+    streams << turbo_stream.prepend('card_stack', partial: 'posts/card', locals: { post: prepend_card }) if prepend_card
+
+    render turbo_stream: streams, status: status
   end
 end

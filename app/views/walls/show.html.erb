@@ -1,65 +1,18 @@
-<% content_for :title, current_city ? "#{current_city.name} Wall" : "Anon Wall" %>
+<% content_for :title, t("wall.title") %>
 
-<main class="mx-auto min-h-screen max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-  <% if current_city %>
-    <%= turbo_stream_from current_city.stream_name %>
+<main class="proximity">
+  <% if location_known? %>
+    <header class="proximity__header">
+      <h1 class="proximity__title"><%= t("wall.title") %></h1>
+      <p class="proximity__tagline"><%= t("wall.tagline") %></p>
+    </header>
 
-    <section class="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-      <aside class="lg:col-start-1" data-controller="collapsible">
-        <div class="sticky top-4 space-y-4">
-          <div class="rounded-2xl border border-white/8 bg-[#252525] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.40)] sm:p-6">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Anonymous Wall</p>
-            <h1 class="mt-2 font-serif text-3xl leading-tight text-slate-100 sm:mt-3 sm:text-5xl">
-              <%= current_city.name %> is writing.
-            </h1>
-            <p class="mt-3 text-sm leading-6 text-slate-400 sm:mt-4">
-              Short local thoughts. No login. Notes fade out after 48 hours.
-            </p>
-          </div>
+    <%= render "posts/card_stack", cards: @cards %>
 
-          <div data-collapsible-target="panel">
-            <%= turbo_frame_tag "composer" do %>
-              <%= render "posts/composer", post: @post, city: current_city, identity: session_identity, status_message: nil %>
-            <% end %>
-          </div>
-        </div>
-
-        <%# Floating write button — mobile only, appears when composer scrolls out of view %>
-        <div
-          data-collapsible-target="fab"
-          class="opacity-0 pointer-events-none fixed bottom-6 right-4 z-50 transition-opacity duration-200 lg:hidden"
-        >
-          <button
-            data-action="collapsible#expand"
-            class="flex items-center gap-2 rounded-full border border-white/20 bg-[#1a1a1a]/95 px-5 py-3 text-sm font-semibold text-slate-100 shadow-lg backdrop-blur"
-          >
-            ✎ Write on <%= current_city.name %>
-          </button>
-        </div>
-      </aside>
-
-      <section class="lg:col-start-2">
-        <div class="whiteboard relative overflow-hidden rounded-xl px-3 py-5 ring-1 ring-white/5 sm:px-5 sm:py-6">
-          <div class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0e0e0e]/70 to-transparent"></div>
-          <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0e0e0e]/80 to-transparent"></div>
-
-          <div id="wall_posts" class="columns-1 gap-5 sm:columns-2 lg:columns-3 xl:columns-4 [column-fill:_balance]">
-            <%= render partial: "posts/post", collection: @posts, as: :post %>
-          </div>
-
-          <%= render "posts/pagination", next_cursor: @next_cursor %>
-        </div>
-      </section>
-    </section>
+    <%= turbo_frame_tag "composer" do %>
+      <%= render "posts/composer_sheet", post: Post.new, identity: session_identity, status_message: nil %>
+    <% end %>
   <% else %>
-    <section class="mx-auto flex min-h-[70vh] max-w-2xl items-center justify-center">
-      <div class="rounded-[2rem] border border-red-900/40 bg-slate-900/90 p-8 text-center shadow-[0_25px_80px_rgba(127,29,29,0.20)]">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-red-400">Unavailable</p>
-        <h1 class="mt-3 text-3xl font-semibold text-slate-100">Service unavailable for your area</h1>
-        <p class="mt-4 text-sm leading-6 text-slate-400">
-          The wall only opens when the app can detect a supported city for this request.
-        </p>
-      </div>
-    </section>
+    <%= render "walls/location_gate" %>
   <% end %>
 </main>

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-# A single anonymous note pinned to a city wall.
+# A single anonymous note pinned to a set of (fuzzed) coordinates.
 class Post < ApplicationRecord
+  include Proximity
+
   MAX_BODY_LENGTH = 120
   POST_COOLDOWN = 1.minute
   LIFETIME = 48.hours
@@ -10,11 +12,14 @@ class Post < ApplicationRecord
 
   validates :body, presence: true, length: { maximum: MAX_BODY_LENGTH }
   validates(
-    :city_slug, :city_name, :pseudonym, :icon, :session_token_digest,
-    :posted_at, :expires_at, :x_position, :y_position, :rotation,
+    :pseudonym, :icon, :session_token_digest,
+    :posted_at, :expires_at, :rotation,
     :color_variant, :size_variant,
+    :latitude, :longitude,
     presence: true
   )
+  validates :latitude,  numericality: { greater_than_or_equal_to: -90,  less_than_or_equal_to: 90 }
+  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   validates :rotation, inclusion: { in: -6..6 }
   validates :color_variant, inclusion: { in: COLOR_VARIANTS }
   validates :size_variant, inclusion: { in: SIZE_VARIANTS }
@@ -27,16 +32,12 @@ class Post < ApplicationRecord
 
   scope :active, -> { where('expires_at > ?', Time.current) }
   scope :newest_first, -> { order(posted_at: :desc, id: :desc) }
-  scope :visible_in_city, ->(city_slug) { active.where(city_slug: city_slug).newest_first }
 
-  after_create_commit :broadcast_to_city
-
-  def assign_wall_context(city:, identity:)
-    self.city_slug = city.slug
-    self.city_name = city.name
+  def assign_proximity_context(location:, identity:)
     self.pseudonym = identity.pseudonym
     self.icon = identity.icon
     self.session_token_digest = identity.digest
+    apply_proximity_fuzz(location.latitude, location.longitude, identity.token)
   end
 
   def note_opacity
@@ -44,23 +45,29 @@ class Post < ApplicationRecord
     (0.35 + (remaining * 0.65)).round(2)
   end
 
-  def note_offset_x
-    x_position || 0
-  end
-
-  def note_offset_y
-    y_position || 0
-  end
-
   def note_rotation
     rotation || 0
   end
 
-  def city_stream_name
-    "city_wall:#{city_slug}"
+  def ranked_score
+    decay = 1.0 / (1 + distance_to_reference)
+    (decay * freshness_factor) + (rand * 0.1)
   end
 
   private
+
+  def distance_to_reference
+    return read_attribute(:distance_km).to_f if has_attribute?(:distance_km)
+
+    0.0
+  end
+
+  def freshness_factor
+    age_hours = (Time.current - posted_at) / 3600.0
+    return 1.0 if age_hours <= 2
+
+    [0.0, 1 - ((age_hours - 2) / 46.0)].max
+  end
 
   def normalize_body
     self.body = body.to_s.squish
@@ -80,8 +87,6 @@ class Post < ApplicationRecord
 
   def apply_visual_defaults
     self.rotation ||= rand(-4..4)
-    self.x_position ||= rand(-22..22)
-    self.y_position ||= rand(0..26)
     self.color_variant ||= COLOR_VARIANTS.sample
     self.size_variant ||= infer_size_variant
   end
@@ -96,8 +101,10 @@ class Post < ApplicationRecord
   def respect_rate_limit
     return if session_token_digest.blank?
 
-    recent_posts = self.class.where(session_token_digest: session_token_digest)
-    recent_post = recent_posts.where('posted_at >= ?', POST_COOLDOWN.ago).exists?
+    recent_post = self.class
+                      .where(session_token_digest: session_token_digest)
+                      .where('posted_at >= ?', POST_COOLDOWN.ago)
+                      .exists?
 
     errors.add(:body, 'can only be posted once per minute') if recent_post
   end
@@ -105,18 +112,11 @@ class Post < ApplicationRecord
   def avoid_exact_repeat
     return if session_token_digest.blank? || body.blank?
 
-    session_posts = self.class.active.where(session_token_digest: session_token_digest)
-    repeated_post = session_posts.where('lower(body) = ?', body.downcase).exists?
+    repeated = self.class.active
+                   .where(session_token_digest: session_token_digest)
+                   .where('lower(body) = ?', body.downcase)
+                   .exists?
 
-    errors.add(:body, 'cannot repeat the exact same message') if repeated_post
-  end
-
-  def broadcast_to_city
-    broadcast_prepend_later_to(
-      city_stream_name,
-      target: 'wall_posts',
-      partial: 'posts/post',
-      locals: { post: self }
-    )
+    errors.add(:body, 'cannot repeat the exact same message') if repeated
   end
 end

@@ -1,0 +1,27 @@
+<section
+  class="stack"
+  data-controller="feed polling"
+  data-polling-url-value="<%= posts_path(format: :turbo_stream) %>"
+  data-polling-interval-value="60000"
+>
+  <div id="card_stack" class="stack__pile" data-feed-target="pile">
+    <%= render partial: "posts/card", collection: cards, as: :post %>
+  </div>
+
+  <% if cards.empty? %>
+    <div class="stack__empty">
+      <p><%= t("wall.empty") %></p>
+    </div>
+  <% end %>
+
+  <footer class="stack__nav">
+    <button type="button" class="stack__nav-btn" data-action="feed#prev" aria-label="Previous">‹</button>
+    <span class="stack__progress" data-feed-target="progress"></span>
+    <button type="button" class="stack__nav-btn" data-action="feed#next" aria-label="Next">›</button>
+  </footer>
+
+  <div class="stack__end" data-feed-target="end" hidden>
+    <p><%= t("wall.end_of_stack") %></p>
+    <%= link_to t("wall.reload"), root_path, class: "stack__reload", data: { turbo_action: "replace" } %>
+  </div>
+</section>
